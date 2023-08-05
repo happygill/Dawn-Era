@@ -22,11 +22,13 @@ import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.WalkOrRunToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomHoverTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
@@ -48,6 +50,7 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
     public DimorphodonEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.moveControl = new FlyingMoveControl(this, 20, false);
+
     }
 
     @Override
@@ -71,16 +74,17 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
     @Override
     public BrainActivityGroup<DimorphodonEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
-                new OneRandomBehaviour<>(
-                        new SetRandomHoverTarget<DimorphodonEntity>().setRadius(12, 6),
-                        new Idle<>().runFor(entity -> entity.getRandom().nextInt(10, 40)))
+                new FirstApplicableBehaviour<>(
+                        new SetRandomWalkTarget<DimorphodonEntity>().setRadius(16).startCondition(DimorphodonEntity::isChild),
+                        new SetRandomHoverTarget<DimorphodonEntity>().setRadius(16)
+                )
         );
     }
 
     protected PathNavigation createNavigation(Level pLevel) {
         FlyingPathNavigation flyingpathnavigation = new FlyingPathNavigation(this, pLevel);
         flyingpathnavigation.setCanOpenDoors(false);
-        flyingpathnavigation.setCanFloat(true);
+        flyingpathnavigation.setCanFloat(false);
         flyingpathnavigation.setCanPassDoors(true);
         return flyingpathnavigation;
     }
@@ -88,9 +92,9 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
     public static AttributeSupplier.Builder setAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 16)
-                .add(Attributes.FLYING_SPEED, 0.1F)
-                .add(Attributes.MOVEMENT_SPEED, 1F)
-                .add(Attributes.ATTACK_DAMAGE, 2.0D)
+                .add(Attributes.FLYING_SPEED, 0.15F)
+                .add(Attributes.MOVEMENT_SPEED, 1.5F)
+                .add(Attributes.ATTACK_DAMAGE, 1.0D)
                 .add(Attributes.FOLLOW_RANGE, 48.0D);
     }
 
@@ -159,6 +163,8 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DATA_ID_GENDER, Boolean.TRUE);
+        this.entityData.define(DATA_ID_BABY, Boolean.TRUE);
+
     }
 
     @Override
