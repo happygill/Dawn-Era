@@ -1,8 +1,8 @@
 package com.happsg.dawnera.registry;
 
 import com.happsg.dawnera.DawnEra;
-import com.happsg.dawnera.entity.dimorphodon.DimorphodonEntity;
-import com.happsg.dawnera.entity.dimorphodon.DimorphodonRenderer;
+import com.happsg.dawnera.entity.animals.DimorphodonEntity;
+import com.happsg.dawnera.entity.api.SmartAnimalRenderer;
 import com.tterrag.registrate.util.entry.EntityEntry;
 import net.minecraft.world.entity.MobCategory;
 
@@ -12,7 +12,7 @@ public class DawnEntities {
     public static void init(){}
     public static final EntityEntry<DimorphodonEntity> DIMORPHODON  = DawnEra.REGISTRATE
             .entity("dimorphodon",DimorphodonEntity::new,MobCategory.CREATURE)
-            .renderer(()->DimorphodonRenderer::new)
+            .renderer(()-> context -> new SmartAnimalRenderer(context,"dimorphodon"))
             .properties(b-> b.setTrackingRange(64)
                     .setUpdateInterval(2)
                     .setShouldReceiveVelocityUpdates(true))
