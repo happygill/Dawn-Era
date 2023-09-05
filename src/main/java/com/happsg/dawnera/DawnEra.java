@@ -1,5 +1,6 @@
 package com.happsg.dawnera;
 
+import com.happsg.dawnera.registry.AllMemoryTypes;
 import com.happsg.dawnera.registry.DawnEntities;
 import com.happsg.dawnera.util.DawnRegistrate;
 import com.mojang.logging.LogUtils;
@@ -29,6 +30,7 @@ public class DawnEra {
         MinecraftForge.EVENT_BUS.register(this);
         REGISTRATE.registerEventListeners(modEventBus);
 
+        AllMemoryTypes.register(modEventBus);
         DawnEntities.init();
 
     }

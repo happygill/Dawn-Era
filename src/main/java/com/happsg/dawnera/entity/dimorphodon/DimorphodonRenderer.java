@@ -1,4 +1,4 @@
-package com.happsg.dawnera.entity;
+package com.happsg.dawnera.entity.dimorphodon;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;

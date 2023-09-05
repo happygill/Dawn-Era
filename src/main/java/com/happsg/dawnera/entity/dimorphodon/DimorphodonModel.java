@@ -1,4 +1,4 @@
-package com.happsg.dawnera.entity;
+package com.happsg.dawnera.entity.dimorphodon;
 
 
 

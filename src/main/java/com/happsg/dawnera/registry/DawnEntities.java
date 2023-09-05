@@ -1,22 +1,10 @@
 package com.happsg.dawnera.registry;
 
 import com.happsg.dawnera.DawnEra;
-import com.happsg.dawnera.entity.DimorphodonEntity;
-import com.happsg.dawnera.entity.DimorphodonRenderer;
-import com.happsg.dawnera.util.DawnRegistrate;
-import com.tterrag.registrate.builders.EntityBuilder;
+import com.happsg.dawnera.entity.dimorphodon.DimorphodonEntity;
+import com.happsg.dawnera.entity.dimorphodon.DimorphodonRenderer;
 import com.tterrag.registrate.util.entry.EntityEntry;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullFunction;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-
-import java.util.function.Supplier;
 
 import static net.minecraft.data.loot.BlockLootSubProvider.noDrop;
 
