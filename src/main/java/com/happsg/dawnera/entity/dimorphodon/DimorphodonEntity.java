@@ -2,7 +2,8 @@ package com.happsg.dawnera.entity.dimorphodon;
 
 import com.happsg.dawnera.entity.api.DietBuilder;
 import com.happsg.dawnera.entity.api.SmartAnimal;
-import com.happsg.dawnera.entity.behaviors.EatFoodItem;
+import com.happsg.dawnera.entity.behaviors.EatFood;
+import com.happsg.dawnera.entity.behaviors.FindFoodEntity;
 import com.happsg.dawnera.entity.behaviors.FindFoodItem;
 import com.happsg.dawnera.registry.AllAnimalDiets;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -88,8 +89,9 @@ public class DimorphodonEntity extends SmartAnimal implements GeoEntity, SmartBr
     @Override
     public BrainActivityGroup<DimorphodonEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
-                new FindFoodItem<DimorphodonEntity>(),
-                new EatFoodItem<DimorphodonEntity>(),
+                new FindFoodItem<>(),
+                new FindFoodEntity<>(),
+                new EatFood<>(),
                 new MoveToWalkTarget()
         );
     }

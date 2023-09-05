@@ -188,9 +188,6 @@ dependencies {
     jarJar(fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.20:1.11")) {
         jarJar.ranged(it, '[1.11,)')
     }
-    jarJar(fg.deobf("software.bernie.geckolib:geckolib-forge-1.20:4.2")) {
-        jarJar.ranged(it, '[4.2,)')
-    }
 
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
