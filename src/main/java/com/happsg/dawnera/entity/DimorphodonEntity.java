@@ -13,7 +13,9 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -26,6 +28,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowOwner;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.WalkOrRunToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomHoverTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
@@ -35,17 +38,20 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.*;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class DimorphodonEntity extends PathfinderMob implements GeoEntity, SmartBrainOwner<DimorphodonEntity> {
 
     private static final EntityDataAccessor<Boolean> DATA_ID_GENDER =
             SynchedEntityData.defineId(DimorphodonEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DATA_ID_BABY =
-            SynchedEntityData.defineId(DimorphodonEntity.class, EntityDataSerializers.BOOLEAN);
+
+
 
     public DimorphodonEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -67,19 +73,26 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
     @Override
     public BrainActivityGroup<DimorphodonEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
-                new WalkOrRunToWalkTarget<>()
+                new MoveToWalkTarget()
         );
     }
 
     @Override
     public BrainActivityGroup<DimorphodonEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
-                new FirstApplicableBehaviour<>(
-                        new SetRandomWalkTarget<DimorphodonEntity>().setRadius(16).startCondition(DimorphodonEntity::isChild),
-                        new SetRandomHoverTarget<DimorphodonEntity>().setRadius(16)
-                )
+                new FirstApplicableBehaviour(
+                        new Idle<DimorphodonEntity>().startCondition(DimorphodonEntity::onGround).runFor(getRandomRuntimeProvider(50,200)).cooldownFor(getRandomRuntimeProvider(100,200)),
+                        new OneRandomBehaviour(
+                                new SetRandomHoverTarget<>().setRadius(20),
+                                new SetRandomWalkTarget<DimorphodonEntity>().setRadius(16)))
         );
     }
+
+    Function<DimorphodonEntity, Integer> getRandomRuntimeProvider(int start,int end){
+        return (dimorphodonEntity -> dimorphodonEntity.getRandom().nextInt(start, end));
+    }
+
+
 
     protected PathNavigation createNavigation(Level pLevel) {
         FlyingPathNavigation flyingpathnavigation = new FlyingPathNavigation(this, pLevel);
@@ -93,7 +106,7 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 16)
                 .add(Attributes.FLYING_SPEED, 0.15F)
-                .add(Attributes.MOVEMENT_SPEED, 1.5F)
+                .add(Attributes.MOVEMENT_SPEED, 1.0F)
                 .add(Attributes.ATTACK_DAMAGE, 1.0D)
                 .add(Attributes.FOLLOW_RANGE, 48.0D);
     }
@@ -114,7 +127,6 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
                 this.setDeltaMovement(this.getDeltaMovement().scale(0.91F));
             }
         }
-
         this.calculateEntityAnimation(false);
     }
 
@@ -126,6 +138,17 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(new AnimationController<>(this, "controller",
+                0, this::predicate));
+    }
+
+    private PlayState predicate(AnimationState<DimorphodonEntity> animationState) {
+        if (animationState.isMoving()) {
+            animationState.getController().setAnimation(RawAnimation.begin().then("animation.dimorphodon.fly", Animation.LoopType.LOOP));
+            return PlayState.CONTINUE;
+        }
+        animationState.getController().setAnimation(RawAnimation.begin().then("animation.dimorphodon.idle", Animation.LoopType.LOOP));
+        return PlayState.CONTINUE;
 
     }
 
@@ -136,9 +159,6 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
         return cache;
     }
 
-    public boolean isChild(){
-        return entityData.get(DATA_ID_BABY);
-    }
     public boolean isMale() {
         return entityData.get(DATA_ID_GENDER);
     }
@@ -147,7 +167,6 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         this.entityData.set(DATA_ID_GENDER, tag.getBoolean("gender"));
-        this.entityData.set(DATA_ID_BABY, tag.getBoolean("baby"));
 
     }
 
@@ -155,7 +174,6 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putBoolean("gender", this.entityData.get(DATA_ID_GENDER));
-        tag.putBoolean("baby", this.entityData.get(DATA_ID_BABY));
 
     }
 
@@ -163,13 +181,11 @@ public class DimorphodonEntity extends PathfinderMob implements GeoEntity, Smart
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DATA_ID_GENDER, Boolean.TRUE);
-        this.entityData.define(DATA_ID_BABY, Boolean.TRUE);
 
     }
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
-        this.entityData.set(DATA_ID_BABY,this.random.nextBoolean());
         this.entityData.set(DATA_ID_GENDER, this.random.nextBoolean());
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
