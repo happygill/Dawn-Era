@@ -139,11 +139,7 @@ repositories {
         allowInsecureProtocol = true
     }
     mavenLocal()
-    maven {
-        // location of the maven that hosts JEI files before January 2023
-        name = "Progwml6's maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
+
     maven {
         // location of the maven that hosts JEI files since January 2023
         name = "Jared's maven"
@@ -163,6 +159,10 @@ repositories {
         name = 'GeckoLib'
         url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
     }
+
+    maven {
+        url "https://cursemaven.com"
+    }
 }
 
 dependencies {
@@ -177,6 +177,9 @@ dependencies {
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
     implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.20:1.11")
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.20:4.2')
+
+
+    implementation(fg.deobf("curse.maven:neat-238372:4580940"))
 
     // JEI
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}"))

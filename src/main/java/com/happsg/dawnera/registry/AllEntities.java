@@ -8,7 +8,7 @@ import net.minecraft.world.entity.MobCategory;
 
 import static net.minecraft.data.loot.BlockLootSubProvider.noDrop;
 
-public class DawnEntities {
+public class AllEntities {
     public static void init(){}
     public static final EntityEntry<DimorphodonEntity> DIMORPHODON  = DawnEra.REGISTRATE
             .entity("dimorphodon",DimorphodonEntity::new,MobCategory.CREATURE)

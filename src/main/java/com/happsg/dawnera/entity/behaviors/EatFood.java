@@ -33,12 +33,12 @@ public class EatFood<T extends SmartAnimal> extends ExtendedBehaviour<T> {
         Brain<?> brain = animal.getBrain();
         if(brain.getMemory(AllMemoryTypes.FOOD_TARGET.get()).get() instanceof ItemEntity item) {
             item.discard();
-            animal.increaseFoodLevel(5);
+            animal.increaseFoodLevel(animal.getDiet().itemFoodReplenish());
             brain.eraseMemory(AllMemoryTypes.FOOD_TARGET.get());
         }
         else if(brain.getMemory(AllMemoryTypes.FOOD_TARGET.get()).get() instanceof LivingEntity entity){
             entity.kill();
-            animal.increaseFoodLevel(25);
+            animal.increaseFoodLevel(animal.getDiet().liveFoodReplenish());
             brain.eraseMemory(AllMemoryTypes.FOOD_TARGET.get());
         }
     }

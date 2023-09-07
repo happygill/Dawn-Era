@@ -1,5 +1,6 @@
 package com.happsg.dawnera.entity.api;
 
+import com.happsg.dawnera.registry.AllAnimalDiets;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,10 +19,16 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.util.GeckoLibUtil;
+import com.happsg.dawnera.entity.api.DietBuilder.Diet;
+
 
 public abstract class SmartAnimal extends PathfinderMob implements GeoEntity, SmartBrainOwner<SmartAnimal> {
 
     final AnimatableInstanceCache cache= GeckoLibUtil.createInstanceCache(this);
+
+
+
+    Diet diet= AllAnimalDiets.EMPTY_DIET;
 
     private static final EntityDataAccessor<Integer> DATA_ID_FOOD_LEVEL =
             SynchedEntityData.defineId(SmartAnimal.class, EntityDataSerializers.INT);
@@ -49,11 +56,12 @@ public abstract class SmartAnimal extends PathfinderMob implements GeoEntity, Sm
     public boolean isFemale() {
         return !isMale();
     }
+    public Diet getDiet() { return diet; }
+    public void setDiet(Diet diet) {
+        if(diet!=null)
+            this.diet = diet;
+    }
 
-
-    public abstract DietBuilder.Diet getDiet();
-
-    protected abstract int getHungerDrainMinutes();
 
     @Override
     protected void registerGoals() {}

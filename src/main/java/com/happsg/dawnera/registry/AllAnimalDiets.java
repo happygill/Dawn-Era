@@ -13,5 +13,7 @@ public final class AllAnimalDiets {
             .addFoodEntities(EntityType.CHICKEN,EntityType.RABBIT,EntityType.PARROT,EntityType.BAT,EntityType.SILVERFISH)
             .build();
 
-
+    public static final Diet EMPTY_DIET = DietBuilder.diet()
+            .hasHungerDrain(false)
+            .build();
 }

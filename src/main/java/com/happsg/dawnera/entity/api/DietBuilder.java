@@ -13,6 +13,13 @@ public class DietBuilder {
     List<Block> foodBlocks=new ArrayList<>();
     List<EntityType> foodEntities=new ArrayList<>();
 
+    boolean hasHunger=true;
+
+    int hungerDrainMinutes=40;
+    int itemFoodReplenish=5;
+    int liveFoodReplenish=25;
+
+
     public static DietBuilder diet() {
         return new DietBuilder();
     }
@@ -32,13 +39,31 @@ public class DietBuilder {
         return this;
     }
 
+    public DietBuilder setHungerDrainMinutes(int hungerDrain){
+        this.hungerDrainMinutes= hungerDrain;
+        return this;
+    }
+
+    public DietBuilder setItemFoodReplenish(int itemFoodReplenish){
+        this.itemFoodReplenish= itemFoodReplenish;
+        return this;
+    }
+    public DietBuilder setLiveFoodReplenish(int liveFoodReplenish){
+        this.liveFoodReplenish= liveFoodReplenish;
+        return this;
+    }
+
+    public DietBuilder hasHungerDrain(boolean hasHunger){
+        this.hasHunger= hasHunger;
+        return this;
+    }
     public Diet build(){
-        return new Diet(foodItems,foodBlocks,foodEntities);
+        return new Diet(foodItems,foodBlocks,foodEntities,hungerDrainMinutes,itemFoodReplenish,liveFoodReplenish,hasHunger);
     }
 
 
 
-    public record Diet(List<Item> foodItems, List<Block> foodBlocks, List<EntityType> foodEntities){
+    public record Diet(List<Item> foodItems, List<Block> foodBlocks, List<EntityType> foodEntities, int hungerDrainMinutes, int itemFoodReplenish, int liveFoodReplenish,boolean hasHunger){
 
         public boolean isEmpty(){
             return foodItems.isEmpty()&&foodEntities.isEmpty()&&foodBlocks.isEmpty();

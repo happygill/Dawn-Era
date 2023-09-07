@@ -5,6 +5,7 @@ import com.happsg.dawnera.entity.api.SmartAnimal;
 import com.happsg.dawnera.entity.behaviors.EatFood;
 import com.happsg.dawnera.entity.behaviors.FindFoodEntity;
 import com.happsg.dawnera.entity.behaviors.FindFoodItem;
+import com.happsg.dawnera.entity.behaviors.HungerDrain;
 import com.happsg.dawnera.registry.AllAnimalDiets;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
@@ -47,19 +48,8 @@ public class DimorphodonEntity extends SmartAnimal{
     public DimorphodonEntity(EntityType<? extends SmartAnimal> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.moveControl = new FlyingMoveControl(this, 20, false);
-
+        setDiet(AllAnimalDiets.DIMORPHODAN_DIET);
     }
-
-    @Override
-    public DietBuilder.Diet getDiet() {
-        return AllAnimalDiets.DIMORPHODAN_DIET;
-    }
-
-    @Override
-    protected int getHungerDrainMinutes() {
-        return 48;
-    }
-
 
 
     @Override
@@ -73,10 +63,11 @@ public class DimorphodonEntity extends SmartAnimal{
     @Override
     public BrainActivityGroup<SmartAnimal> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
+                new HungerDrain<>(),
                 new FindFoodItem<>(),
                 new FindFoodEntity<>(),
                 new EatFood<>(),
-                new MoveToWalkTarget()
+                new MoveToWalkTarget<>()
         );
     }
 
