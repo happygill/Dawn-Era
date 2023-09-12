@@ -1,6 +1,12 @@
 package com.happsg.dawnera.entity.api;
 
+import com.happsg.dawnera.entity.animals.DimorphodonEntity;
+import com.happsg.dawnera.entity.behaviors.EatFood;
+import com.happsg.dawnera.entity.behaviors.FindFoodEntity;
+import com.happsg.dawnera.entity.behaviors.FindFoodItem;
+import com.happsg.dawnera.entity.behaviors.HungerDrain;
 import com.happsg.dawnera.registry.AllAnimalDiets;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -14,19 +20,30 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomHoverTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.util.GeckoLibUtil;
 import com.happsg.dawnera.entity.api.DietBuilder.Diet;
 
+import java.util.List;
+import java.util.function.Function;
+
 
 public abstract class SmartAnimal extends PathfinderMob implements GeoEntity, SmartBrainOwner<SmartAnimal> {
 
     final AnimatableInstanceCache cache= GeckoLibUtil.createInstanceCache(this);
-
-
 
     Diet diet= AllAnimalDiets.EMPTY_DIET;
 
@@ -62,6 +79,43 @@ public abstract class SmartAnimal extends PathfinderMob implements GeoEntity, Sm
             this.diet = diet;
     }
 
+    @Override
+    public List<ExtendedSensor<SmartAnimal>> getSensors() {
+        return ObjectArrayList.of(
+                new NearbyPlayersSensor<>(),
+                new HurtBySensor<>()
+        );
+    }
+
+
+
+    @Override
+    public BrainActivityGroup<SmartAnimal> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(
+                new FirstApplicableBehaviour(
+                        new Idle<SmartAnimal>().startCondition(SmartAnimal::onGround).runFor(getRandomRuntimeProvider(50,200)).cooldownFor(getRandomRuntimeProvider(100,200)),
+                        new OneRandomBehaviour(
+                                new SetRandomHoverTarget<>().setRadius(20),
+                                new SetRandomWalkTarget<SmartAnimal>().setRadius(16)))
+        );
+    }
+
+
+    Function<SmartAnimal, Integer> getRandomRuntimeProvider(int start, int end){
+        return (smartAnimal -> smartAnimal.getRandom().nextInt(start, end));
+    }
+
+    @Override
+    public BrainActivityGroup<SmartAnimal> getCoreTasks() {
+        return BrainActivityGroup.coreTasks(
+                new HungerDrain<>(),
+                new FindFoodItem<>(),
+                new FindFoodEntity<>(),
+                new EatFood<>(),
+                new MoveToWalkTarget<>()
+        );
+    }
+
 
     @Override
     protected void registerGoals() {}
@@ -71,7 +125,6 @@ public abstract class SmartAnimal extends PathfinderMob implements GeoEntity, Sm
         super.addAdditionalSaveData(tag);
         tag.putInt("food_level", this.entityData.get(DATA_ID_FOOD_LEVEL));
         tag.putBoolean("male_gender", this.entityData.get(DATA_ID_MALE_GENDER));
-
     }
 
     @Override
@@ -79,8 +132,6 @@ public abstract class SmartAnimal extends PathfinderMob implements GeoEntity, Sm
         super.readAdditionalSaveData(tag);
         this.entityData.set(DATA_ID_FOOD_LEVEL, tag.getInt("food_level"));
         this.entityData.set(DATA_ID_MALE_GENDER, tag.getBoolean("male_gender"));
-
-
     }
 
     @Override
@@ -88,7 +139,6 @@ public abstract class SmartAnimal extends PathfinderMob implements GeoEntity, Sm
         super.defineSynchedData();
         this.entityData.define(DATA_ID_FOOD_LEVEL, 100);
         this.entityData.define(DATA_ID_MALE_GENDER, Boolean.TRUE);
-
     }
 
     @Override

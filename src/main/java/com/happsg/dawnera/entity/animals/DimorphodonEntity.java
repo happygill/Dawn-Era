@@ -19,16 +19,6 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
-import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomHoverTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
-import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.object.PlayState;
@@ -50,42 +40,6 @@ public class DimorphodonEntity extends SmartAnimal{
         this.moveControl = new FlyingMoveControl(this, 20, false);
         setDiet(AllAnimalDiets.DIMORPHODAN_DIET);
     }
-
-
-    @Override
-    public List<ExtendedSensor<DimorphodonEntity>> getSensors() {
-        return ObjectArrayList.of(
-                new NearbyPlayersSensor<>(),
-                new HurtBySensor<>()
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<SmartAnimal> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-                new HungerDrain<>(),
-                new FindFoodItem<>(),
-                new FindFoodEntity<>(),
-                new EatFood<>(),
-                new MoveToWalkTarget<>()
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<SmartAnimal> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-                new FirstApplicableBehaviour(
-                        new Idle<DimorphodonEntity>().startCondition(DimorphodonEntity::onGround).runFor(getRandomRuntimeProvider(50,200)).cooldownFor(getRandomRuntimeProvider(100,200)),
-                        new OneRandomBehaviour(
-                                new SetRandomHoverTarget<>().setRadius(20),
-                                new SetRandomWalkTarget<DimorphodonEntity>().setRadius(16)))
-        );
-    }
-
-    Function<DimorphodonEntity, Integer> getRandomRuntimeProvider(int start,int end){
-        return (dimorphodonEntity -> dimorphodonEntity.getRandom().nextInt(start, end));
-    }
-
 
 
     protected PathNavigation createNavigation(Level pLevel) {
