@@ -1,5 +1,7 @@
-// 1.20.1	2023-08-05T12:59:27.9793358	Registrate Provider for dawnera [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
-a8766208df54904e27f8c8886ebc2eedd70f40d3 assets/dawnera/lang/en_ud.json
-69f69a78071d774f200d26cdc98783cefc33dd01 assets/dawnera/lang/en_us.json
+// 1.20.1	2023-10-03T20:11:26.9085703	Registrate Provider for dawnera [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+a26c71dcd64f8131081f14f9ff902f0f5e4e6ee2 assets/dawnera/lang/en_ud.json
+ddeca0dcfdf31ad966c45cf150accd58c8baaaae assets/dawnera/lang/en_us.json
+63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/dawnera/models/item/diabloceratops_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/dawnera/models/item/dimorphodon_spawn_egg.json
+b2d78952e2396c9485abaac4462fd963d1cc685d data/dawnera/loot_tables/entities/diabloceratops.json
 007bf1482900888354b42d8faad0ab2a741fccc3 data/dawnera/loot_tables/entities/dimorphodon.json

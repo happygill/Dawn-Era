@@ -1,13 +1,7 @@
 package com.happsg.dawnera.entity.animals;
 
-import com.happsg.dawnera.entity.api.DietBuilder;
-import com.happsg.dawnera.entity.api.SmartAnimal;
-import com.happsg.dawnera.entity.behaviors.EatFood;
-import com.happsg.dawnera.entity.behaviors.FindFoodEntity;
-import com.happsg.dawnera.entity.behaviors.FindFoodItem;
-import com.happsg.dawnera.entity.behaviors.HungerDrain;
+import com.happsg.dawnera.entity.api.DinosaurEntity;
 import com.happsg.dawnera.registry.AllAnimalDiets;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -23,19 +17,15 @@ import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.object.PlayState;
 
-import java.util.List;
-import java.util.function.Function;
+public class DimorphodonEntity extends DinosaurEntity {
 
-public class DimorphodonEntity extends SmartAnimal{
-
-
-
-    private final static RawAnimation FLY_ANIMATION=RawAnimation.begin().then("animation.dimorphodon.fly", Animation.LoopType.LOOP);
-    private final static RawAnimation IDLE_ANIMATION=RawAnimation.begin().then("animation.dimorphodon.idle", Animation.LoopType.LOOP);
+    private final static RawAnimation FLY_ANIMATION = RawAnimation.begin().then("animation.dimorphodon.fly", Animation.LoopType.LOOP);
+    private final static RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("animation.dimorphodon.idle", Animation.LoopType.LOOP);
+    private final static RawAnimation EAT_ANIMATION = RawAnimation.begin().then("animation.dimorphodon.eat", Animation.LoopType.PLAY_ONCE);
 
 
 
-    public DimorphodonEntity(EntityType<? extends SmartAnimal> pEntityType, Level pLevel) {
+    public DimorphodonEntity(EntityType<? extends DinosaurEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.moveControl = new FlyingMoveControl(this, 20, false);
         setDiet(AllAnimalDiets.DIMORPHODAN_DIET);
@@ -89,7 +79,6 @@ public class DimorphodonEntity extends SmartAnimal{
         controllerRegistrar.add(new AnimationController<>(this, "controller",
                 0, this::predicate));
     }
-
 
 
     private PlayState predicate(AnimationState<DimorphodonEntity> animationState) {

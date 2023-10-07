@@ -1,6 +1,6 @@
 package com.happsg.dawnera.entity.behaviors;
 
-import com.happsg.dawnera.entity.api.SmartAnimal;
+import com.happsg.dawnera.entity.api.DinosaurEntity;
 import com.happsg.dawnera.registry.AllMemoryTypes;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -15,7 +15,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 import java.util.List;
 
-public class EatFood<T extends SmartAnimal> extends ExtendedBehaviour<T> {
+public class EatFood<T extends DinosaurEntity> extends ExtendedBehaviour<T> {
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS;
 
     @Override
@@ -33,8 +33,9 @@ public class EatFood<T extends SmartAnimal> extends ExtendedBehaviour<T> {
         Brain<?> brain = animal.getBrain();
         if(brain.getMemory(AllMemoryTypes.FOOD_TARGET.get()).get() instanceof ItemEntity item) {
             item.discard();
-            animal.increaseFoodLevel(animal.getDiet().itemFoodReplenish());
             brain.eraseMemory(AllMemoryTypes.FOOD_TARGET.get());
+            animal.increaseFoodLevel(animal.getDiet().itemFoodReplenish());
+            animal.setEating(true);
         }
         else if(brain.getMemory(AllMemoryTypes.FOOD_TARGET.get()).get() instanceof LivingEntity entity){
             entity.kill();

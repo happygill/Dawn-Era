@@ -62,7 +62,6 @@ public class DietBuilder {
     }
 
 
-
     public record Diet(List<Item> foodItems, List<Block> foodBlocks, List<EntityType> foodEntities, int hungerDrainMinutes, int itemFoodReplenish, int liveFoodReplenish,boolean hasHunger){
 
         public boolean isEmpty(){

@@ -13,7 +13,9 @@ public final class AllAnimalDiets {
             .addFoodEntities(EntityType.CHICKEN,EntityType.RABBIT,EntityType.PARROT,EntityType.BAT,EntityType.SILVERFISH)
             .build();
 
-    public static final Diet EMPTY_DIET = DietBuilder.diet()
-            .hasHungerDrain(false)
+    public static final Diet DIABLOCERATOPS_DIET = DietBuilder.diet()
+            .addFoodItems(Items.BAKED_POTATO, Items.BEETROOT, Items.MELON_SLICE, Items.CARROT, Items.APPLE, Items.WHEAT, Items.SWEET_BERRIES).build();
+
+    public static final Diet EMPTY_DIET = DietBuilder.diet().hasHungerDrain(false)
             .build();
 }

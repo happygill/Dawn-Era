@@ -1,6 +1,6 @@
 package com.happsg.dawnera.entity.behaviors;
 
-import com.happsg.dawnera.entity.api.SmartAnimal;
+import com.happsg.dawnera.entity.api.DinosaurEntity;
 import com.happsg.dawnera.registry.AllMemoryTypes;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -12,14 +12,12 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.Item;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
-public class FindFoodEntity<T extends SmartAnimal> extends ExtendedBehaviour<T> {
+public class FindFoodEntity<T extends DinosaurEntity> extends ExtendedBehaviour<T> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS;
 
